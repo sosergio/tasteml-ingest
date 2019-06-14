@@ -1,8 +1,11 @@
 
-cluster address: https://cloud.mongodb.com/v2/5d020fdbcf09a2dda67c5ac0#clusters/detail/tasteml-db
+cluster address: https://cloud.mongodb.com/v2/5d0342a09ccf648ca5f2e4dc
 username: admin
-password: ifhK8pwM6Uhbs8C
-connection string: mongodb+srv://admin:<password>@tasteml-db-gndd2.mongodb.net/test?retryWrites=true&w=majority
+password: khCggojq5uP5Wdey
+old password: ifhK8pwM6Uhbs8C
+connection string: mongodb+srv://admin:<password>@tasteml-cluster-mc39i.mongodb.net/test?retryWrites=true&w=majority
+
+ip address needs to be whitelisted on mongodb Atlas
 
 -- HOW TO INSTALL
 install python3

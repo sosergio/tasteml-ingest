@@ -7,15 +7,15 @@ def insertOne(doc: any, collection: pymongo.collection.Collection):
     pprint.pprint(doc)
     collection.insert_one(doc)
 
-
 from pymongo import MongoClient
-password = "ifhK8pwM6Uhbs8C"
 username = "admin"
-client = MongoClient(f"mongodb+srv://{username}:{password}@tasteml-db-gndd2.mongodb.net/test?retryWrites=true&w=majority")
+password = "khCggojq5uP5Wdey"
+dbHost = "tasteml-cluster-mc39i"
+
+client = MongoClient(f"mongodb+srv://{username}:{password}@{dbHost}.mongodb.net/test?retryWrites=true&w=majority")
 db = client.get_database('tasteml-db')
 collection = db.get_collection('tasting-notes')
-items = collection.find({})
-for doc in items:
+for doc in collection.find():
     pprint.pprint(doc)
 
 if False:
