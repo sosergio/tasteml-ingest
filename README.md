@@ -10,9 +10,15 @@ ip address needs to be whitelisted on mongodb Atlas
 -- HOW TO INSTALL
 install python3
 and use pip3 (comes with python3) to install the following packages:
+# required for interacting with MongoDb
 dnspython
 pymongo
+# natural language toolkit
 nltk
+# SciPy stack
+numpy scipy matplotlib ipython jupyter pandas sympy nose
+# after SciPy is insalled, install scikit-learn
+scikit-learn
 
 -- VISUAL STUDIO CODE
 install python extension for linting, debugging

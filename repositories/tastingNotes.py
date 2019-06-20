@@ -10,10 +10,18 @@ def getCollection():
     return db.get_collection('tasting-notes')
 
 def add(doc: any):
-    getCollection().insert_one(doc)
+    toSave = {}
+    for attr, value in doc.items():
+        if(value != 0 and attr != "index"):
+            toSave[attr] = value
+    getCollection().insert_one(toSave)
 
 def find(filter: any):
     getCollection().find(filter)
 
 def deleteAll():
     getCollection().delete_many({})
+
+def insertMany(data):
+    for note in data:
+        add(note)
