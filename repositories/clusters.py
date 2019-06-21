@@ -6,17 +6,10 @@ def getCollection():
     dbHost = "tasteml-cluster-mc39i"
     client = MongoClient(f"mongodb+srv://{username}:{password}@{dbHost}.mongodb.net/test?retryWrites=true&w=majority")
     db = client.get_database('tasteml-db')
-    return db.get_collection('tasting-notes')
-
-def removeUndefinedProps(doc):
-    toSave = {}
-    for attr, value in doc.items():
-        if(value != 0 and attr != "index"):
-            toSave[attr] = value
-    return toSave
+    return db.get_collection('clusters')
 
 def add(doc: any):    
-    getCollection().insert_one(removeUndefinedProps(doc))
+    getCollection().insert_one(doc)
 
 def find(filter: any):
     getCollection().find(filter)
@@ -30,7 +23,6 @@ def insertMany(data, chunkSize):
     chunk = list()
     counter = 0
     for note in data:
-        note = removeUndefinedProps(note)
         chunk.append(note)
         counter = counter + 1
         if(chunk.__len__() == chunkSize or counter == data.__len__()):
