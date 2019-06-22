@@ -11,6 +11,7 @@ from nltk.corpus import stopwords
 import matplotlib.pyplot as plt
 from sklearn.cluster import KMeans
 from datetime import datetime
+from nltk.stem.porter import PorterStemmer
 
 def readJsonFile(path):
     # this would read the entire file and generate dataframe
@@ -47,10 +48,16 @@ def generateDataFrame(data:any):
     return pd.DataFrame(data)
 
 # returns a new DataFrame where every row is the TF-IDF tokenization of the collection passed in, with stopwords
-def tokenize(coll:any, stopWords:any):
-    vectorizer = TfidfVectorizer(ngram_range=(1,1), stop_words=stopWords)
+# consider Stemming: reducing similar words to a base stem) and
+# consiedr Word Categorizing: analyze sentences to categorize words like adjectives, nouns, ...
+def tokenize(coll:any, stopWords:any, vocabulary:any):
+    if(stopWords):
+        vectorizer = TfidfVectorizer(ngram_range=(1,1), stop_words=stopWords)
+    else:
+        vectorizer = TfidfVectorizer(ngram_range=(1,1), vocabulary=vocabulary)
     tokens = vectorizer.fit_transform(coll).toarray()
     names = vectorizer.get_feature_names()
+    print("names found", names.__len__())
     return tokens, names
 
 def getTopTokenNames(tokens, names, limit):
@@ -71,33 +78,45 @@ def convertDataFrameToList(df:any):
 def getKMean(dataFrame, numberOfClusters):
     kmeans = KMeans(n_clusters=numberOfClusters)
     alldistances = kmeans.fit_transform(dataFrame)
+    np.round_(alldistances,3,alldistances)
     centroids = kmeans.cluster_centers_
     return centroids, alldistances
 
-
 startTime = datetime.now()
 
-sampleCount = 1000
-firstPassExcludeTopNamesCount = 50
-numberOfClusters = 15
-insertManyInChunksOf = 25
+sampleCount = 50000
+firstPassExcludeTopNamesCount = 0
+numberOfClusters = 25
+insertManyInChunksOf = 250
+updateDb = True
+runTwoPassOfTokenize = False
 
 data = readJsonFile("resources/winemag-data-130k-v2.json")
+flavours_dict = readJsonFile("resources/flavours.json")
 data_topQuality = filterWithQuality(80, data)
+print("items with top quality", data_topQuality.__len__())
 data_sample = take(sampleCount, data_topQuality)
 data_df = generateDataFrame(data_sample)
+# remove rows wich have nulls
+data_df.dropna()
+# transform points column from string to numbers
+data_df["points"] = data_df["points"].apply(pd.to_numeric)
+# attach a column for quality/price ratio
+data_df['ratio'] = data_df.apply(lambda row: row.points/row.price, axis=1)
 print("load file completed after: ", (datetime.now() - startTime))
 
 # first pass tokenize
 stopWords = getStopWords()
-tokens, names = tokenize(data_df["description"], stopWords)
+tokens, names = tokenize(data_df["description"], None, flavours_dict)
 print("first pass tokenize completed after: ", (datetime.now() - startTime))
 
 # second pass tokenize
-firstPass_topNames = getTopTokenNames(tokens, names, firstPassExcludeTopNamesCount)
-print("firstPass_topNames: ", firstPass_topNames)
-stopWords = stopWords + list(firstPass_topNames[:50])
-tokens, names = tokenize(data_df["description"], stopWords)
+if(runTwoPassOfTokenize):
+    firstPass_topNames = getTopTokenNames(tokens, names, firstPassExcludeTopNamesCount)
+    print("firstPass_topNames: ", firstPass_topNames)
+    stopWords = stopWords + list(firstPass_topNames[:50])
+    tokens, names = tokenize(data_df["description"], stopWords, None)
+
 tokens_df = createDataFrame(tokens, names)
 print("second pass tokenize and dataframe completed after: ", (datetime.now() - startTime))
 
@@ -105,7 +124,7 @@ print("second pass tokenize and dataframe completed after: ", (datetime.now() - 
 centroids, allDistances = getKMean(tokens_df, numberOfClusters)
 cluster_df = createDataFrame(centroids, names)
 cluster_list = convertDataFrameToList(cluster_df)
-colNames = ['to_cluster_{0}'.format(s) for s in range(numberOfClusters)]
+colNames = ['to_{0}'.format(s) for s in range(numberOfClusters)]
 allDistances_df = createDataFrame(allDistances, colNames)
 print("kmean centroids and all distances completed after: ", (datetime.now() - startTime))
 
@@ -116,12 +135,13 @@ data_withTokens_andDistanceToCentroids_list = convertDataFrameToList(data_withTo
 print("merging dataframes completed after: ", (datetime.now() - startTime))
 
 # insert in Db
-TastingNotesRepo.deleteAll()
-TastingNotesRepo.insertMany(data_withTokens_andDistanceToCentroids_list, insertManyInChunksOf)
-print("insert tasting notes in db completed after: ", (datetime.now() - startTime))
-TagsRepo.deleteAll()
-TagsRepo.insertMany(names, 100)
-print("insert tags in db completed after: ", (datetime.now() - startTime))
-ClustersRepo.deleteAll()
-ClustersRepo.insertMany(cluster_list, insertManyInChunksOf)
-print("insert clusters in db completed after: ", (datetime.now() - startTime))
+if(updateDb):
+    TastingNotesRepo.deleteAll()
+    TastingNotesRepo.insertMany(data_withTokens_andDistanceToCentroids_list, insertManyInChunksOf)
+    print("insert tasting notes in db completed after: ", (datetime.now() - startTime))
+    TagsRepo.deleteAll()
+    TagsRepo.add(names)
+    print("insert tags in db completed after: ", (datetime.now() - startTime))
+    ClustersRepo.deleteAll()
+    ClustersRepo.insertMany(cluster_list, insertManyInChunksOf)
+    print("insert clusters in db completed after: ", (datetime.now() - startTime))
