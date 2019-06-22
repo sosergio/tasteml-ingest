@@ -84,12 +84,12 @@ def getKMean(dataFrame, numberOfClusters):
 
 startTime = datetime.now()
 
-sampleCount = 50000
-firstPassExcludeTopNamesCount = 0
-numberOfClusters = 25
+sampleCount = 5000
+firstPassExcludeTopNamesCount = 10
+numberOfClusters = 15
 insertManyInChunksOf = 250
 updateDb = True
-runTwoPassOfTokenize = False
+useStopWords = False
 
 data = readJsonFile("resources/winemag-data-130k-v2.json")
 flavours_dict = readJsonFile("resources/flavours.json")
@@ -106,19 +106,26 @@ data_df['ratio'] = data_df.apply(lambda row: row.points/row.price, axis=1)
 print("load file completed after: ", (datetime.now() - startTime))
 
 # first pass tokenize
-stopWords = getStopWords()
-tokens, names = tokenize(data_df["description"], None, flavours_dict)
+if(useStopWords):
+    stopWords = getStopWords()
+    tokens, names = tokenize(data_df["description"], stopWords, None)
+else:
+    tokens, names = tokenize(data_df["description"], None, flavours_dict)
 print("first pass tokenize completed after: ", (datetime.now() - startTime))
 
 # second pass tokenize
-if(runTwoPassOfTokenize):
+if(useStopWords):
     firstPass_topNames = getTopTokenNames(tokens, names, firstPassExcludeTopNamesCount)
     print("firstPass_topNames: ", firstPass_topNames)
-    stopWords = stopWords + list(firstPass_topNames[:50])
+    stopWords = stopWords + list(firstPass_topNames[:firstPassExcludeTopNamesCount])
     tokens, names = tokenize(data_df["description"], stopWords, None)
+    names = getTopTokenNames(tokens, names, 200)
+    print("keeping only first 200 top names: ", names)
+    tokens, names = tokenize(data_df["description"], None, names)
+    print("second pass tokenize completed after: ", (datetime.now() - startTime))
 
 tokens_df = createDataFrame(tokens, names)
-print("second pass tokenize and dataframe completed after: ", (datetime.now() - startTime))
+print("dataframe completed after: ", (datetime.now() - startTime))
 
 # calculate the kmean centroids and all distances (item to centroids)
 centroids, allDistances = getKMean(tokens_df, numberOfClusters)
@@ -139,9 +146,9 @@ if(updateDb):
     TastingNotesRepo.deleteAll()
     TastingNotesRepo.insertMany(data_withTokens_andDistanceToCentroids_list, insertManyInChunksOf)
     print("insert tasting notes in db completed after: ", (datetime.now() - startTime))
-    TagsRepo.deleteAll()
-    TagsRepo.add(names)
-    print("insert tags in db completed after: ", (datetime.now() - startTime))
+    #TagsRepo.deleteAll()
+    #TagsRepo.add(names)
+    #print("insert tags in db completed after: ", (datetime.now() - startTime))
     ClustersRepo.deleteAll()
     ClustersRepo.insertMany(cluster_list, insertManyInChunksOf)
     print("insert clusters in db completed after: ", (datetime.now() - startTime))
