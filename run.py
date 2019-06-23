@@ -1,7 +1,7 @@
 import nltk
 import json
 import repositories.tastingNotes as TastingNotesRepo
-import repositories.tags as TagsRepo
+import repositories.tastes as TastesRepo
 import repositories.clusters as ClustersRepo
 import numpy as np
 import pandas as pd
@@ -146,9 +146,9 @@ if(updateDb):
     TastingNotesRepo.deleteAll()
     TastingNotesRepo.insertMany(data_withTokens_andDistanceToCentroids_list, insertManyInChunksOf)
     print("insert tasting notes in db completed after: ", (datetime.now() - startTime))
-    #TagsRepo.deleteAll()
-    #TagsRepo.add(names)
-    #print("insert tags in db completed after: ", (datetime.now() - startTime))
+    TastesRepo.deleteAll()
+    TastesRepo.add(names)
+    print("insert tags in db completed after: ", (datetime.now() - startTime))
     ClustersRepo.deleteAll()
     ClustersRepo.insertMany(cluster_list, insertManyInChunksOf)
     print("insert clusters in db completed after: ", (datetime.now() - startTime))
