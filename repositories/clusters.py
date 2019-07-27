@@ -12,7 +12,7 @@ def add(doc: any):
     getCollection().insert_one(doc)
 
 def find(filter: any):
-    getCollection().find(filter)
+    return getCollection().find(filter)
 
 def deleteAll():
     getCollection().delete_many({})
