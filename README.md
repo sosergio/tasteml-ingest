@@ -34,6 +34,7 @@ import pandas as pd
 # install multiple packages at once ()
 pip3 install -U numpy scipy matplotlib ipython jupyter pandas sympy nose
 pip3 install -U scikit-learn
+pip3 install -U requests
 
 -- VISUAL STUDIO CODE
 install python extension for linting, debugging

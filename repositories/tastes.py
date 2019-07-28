@@ -14,8 +14,14 @@ def add(taste: any):
 def find(filter: any):
     return getCollection().find(filter)
 
+def find_one(filter: any):
+    return getCollection().find_one(filter)
+
 def deleteAll():
     getCollection().delete_many({})
+
+def delete_one(filter):
+    getCollection().delete_one(filter)
 
 def insertMany(data, chunkSize):
     if(chunkSize <= 0):
