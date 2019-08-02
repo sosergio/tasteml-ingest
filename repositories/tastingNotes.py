@@ -1,38 +1,37 @@
 from pymongo import MongoClient
 
-def getCollection():
-    username = "admin"
-    password = "khCggojq5uP5Wdey"
-    dbHost = "tasteml-cluster-mc39i"
-    client = MongoClient(f"mongodb+srv://{username}:{password}@{dbHost}.mongodb.net/test?retryWrites=true&w=majority")
-    db = client.get_database('tasteml-db')
-    return db.get_collection('tasting-notes')
+class TastingNotesRepo:
 
-def removeUndefinedProps(doc):
-    toSave = {}
-    for attr, value in doc.items():
-        if(value != 0 and attr != "index"):
-            toSave[attr] = value
-    return toSave
+    def __init__(self, client:MongoClient):
+        db = client.get_database('tasteml-db')
+        self.collection = db.get_collection('tasting-notes')
 
-def add(doc: any):    
-    getCollection().insert_one(removeUndefinedProps(doc))
+    def removeUndefinedProps(self, doc):
+        toSave = {}
+        for attr, value in doc.items():
+            if(value != 0 and attr != "index"):
+                toSave[attr] = value
+        return toSave
 
-def find(filter: any):
-    return getCollection().find(filter)
+    def add(self, doc: any):    
+        self.collection.insert_one(self.removeUndefinedProps(doc))
 
-def deleteAll():
-    getCollection().delete_many({})
+    def find(self, filter: any):
+        return self.collection.find(filter)
 
-def insertMany(data, chunkSize):
-    if(chunkSize <= 0):
-        chunkSize = 10
-    chunk = list()
-    counter = 0
-    for note in data:
-        note = removeUndefinedProps(note)
-        chunk.append(note)
-        counter = counter + 1
-        if(chunk.__len__() == chunkSize or counter == data.__len__()):
-            getCollection().insert_many(chunk)
-            chunk = list()
+    def deleteAll(self):
+        self.collection.delete_many({})
+
+    def insertMany(self, data, chunkSize):
+        if(chunkSize <= 0):
+            chunkSize = 10
+        chunk = list()
+        counter = 0
+        for note in data:
+            note = self.removeUndefinedProps(note)
+            chunk.append(note)
+            counter = counter + 1
+            if(chunk.__len__() == chunkSize or counter == data.__len__()):
+                self.collection.insert_many(chunk)
+                chunk = list()
+            

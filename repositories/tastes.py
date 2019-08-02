@@ -1,36 +1,34 @@
 from pymongo import MongoClient
 
-def getCollection():
-    username = "admin"
-    password = "khCggojq5uP5Wdey"
-    dbHost = "tasteml-cluster-mc39i"
-    client = MongoClient(f"mongodb+srv://{username}:{password}@{dbHost}.mongodb.net/test?retryWrites=true&w=majority")
-    db = client.get_database('tasteml-db')
-    return db.get_collection('tastes')
+class TastesRepo:
 
-def add(taste: any):    
-    getCollection().insert_one(taste)
+    def __init__(self, client:MongoClient):
+        db = client.get_database('tasteml-db')
+        self.collection = db.get_collection('tastes')
 
-def find(filter: any):
-    return getCollection().find(filter)
+    def add(self, taste: any):    
+        self.collection.insert_one(taste)
 
-def find_one(filter: any):
-    return getCollection().find_one(filter)
+    def find(self, filter: any):
+        return self.collection.find(filter)
 
-def deleteAll():
-    getCollection().delete_many({})
+    def find_one(self, filter: any):
+        return self.collection.find_one(filter)
 
-def delete_one(filter):
-    getCollection().delete_one(filter)
+    def deleteAll(self):
+        self.collection.delete_many({})
 
-def insertMany(data, chunkSize):
-    if(chunkSize <= 0):
-        chunkSize = 10
-    chunk = list()
-    counter = 0
-    for note in data:
-        chunk.append(note)
-        counter = counter + 1
-        if(chunk.__len__() == chunkSize or counter == data.__len__()):
-            getCollection().insert_many(chunk)
-            chunk = list()
+    def delete_one(self, filter):
+        self.collection.delete_one(filter)
+
+    def insertMany(self, data, chunkSize):
+        if(chunkSize <= 0):
+            chunkSize = 10
+        chunk = list()
+        counter = 0
+        for note in data:
+            chunk.append(note)
+            counter = counter + 1
+            if(chunk.__len__() == chunkSize or counter == data.__len__()):
+                self.collection.insert_many(chunk)
+                chunk = list()
