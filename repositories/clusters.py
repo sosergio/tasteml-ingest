@@ -2,7 +2,7 @@ from pymongo import MongoClient
 
 class ClustersRepo:
 
-    def __init__(self, client:MongoClient):
+    def __init__(self, client: MongoClient):
         db = client.get_database('tasteml-db')
         self.collection = db.get_collection('clusters')
 

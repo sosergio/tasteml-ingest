@@ -1,14 +1,15 @@
 import pandas as pd
+from pandas import DataFrame
 
 class DataFrameFactory:
 
     @staticmethod    
     # returns a Pandas DataFrame from the list
-    def generateDataFrame(data:any):
+    def generateDataFrame(data:any) -> DataFrame:
         return pd.DataFrame(data)
     
     @staticmethod
-    def createDataFrame(values, cols):
+    def createDataFrame(values, cols) -> DataFrame:
         return pd.DataFrame(values, columns=cols)
 
     @staticmethod

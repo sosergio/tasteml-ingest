@@ -1,6 +1,6 @@
 [
     "acacia", "honeysuckle", "chamomile", "elderflower", "blossom", "rose", "violet",
-    "apple", "red apple", "gooseberry", "pear", "grape",
+    "apple", "red apple", "gooseberry", "pear",
     "grapefruit", "lemon", "lime", "zest",
     "peach", "apricot", "nectarine",
     "banana", "lychee", "mango", "melon", "passion", "pineapple",
@@ -22,5 +22,6 @@
     "earth", "petrol", "rubber", "tar", "stony", "steely", "wool",
     "leaf","herb","tomatoess","white flower","red fruits","ripe fruit","rum cake",
     "orange", "citrus",
-    "smoked meat", "bacon", "umami", "licorice", "cassis", "coffee", "liqueur", "black tea" 
+    "smoked meat", "bacon", "umami", "licorice", "cassis", "liqueur", "black tea",
+    "fat", "espresso"
 ]

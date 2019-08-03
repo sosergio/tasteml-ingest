@@ -2,9 +2,10 @@ from pymongo import MongoClient
 
 class TastesRepo:
 
-    def __init__(self, client:MongoClient):
+    def __init__(self, client):
         db = client.get_database('tasteml-db')
-        self.collection = db.get_collection('tastes')
+        collection = db.get_collection('tastes')
+        self.collection = collection
 
     def add(self, taste: any):    
         self.collection.insert_one(taste)
