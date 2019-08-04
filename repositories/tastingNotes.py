@@ -1,8 +1,9 @@
 from pymongo import MongoClient
 
+
 class TastingNotesRepo:
 
-    def __init__(self, client:MongoClient):
+    def __init__(self, client: MongoClient):
         db = client.get_database('tasteml-db')
         self.collection = db.get_collection('tasting-notes')
 
@@ -13,7 +14,7 @@ class TastingNotesRepo:
                 toSave[attr] = value
         return toSave
 
-    def add(self, doc: any):    
+    def add(self, doc: any):
         self.collection.insert_one(self.removeUndefinedProps(doc))
 
     def find(self, filter: any):
@@ -34,4 +35,3 @@ class TastingNotesRepo:
             if(chunk.__len__() == chunkSize or counter == data.__len__()):
                 self.collection.insert_many(chunk)
                 chunk = list()
-            

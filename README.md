@@ -7,9 +7,19 @@ connection string: mongodb+srv://admin:<password>@tasteml-cluster-mc39i.mongodb.
 
 ip address needs to be whitelisted on mongodb Atlas
 
+-- TO GENERATE THE REQUIREMENTS.txt
+install python3
+pip3 freeze > requirements.txt
+
+
 -- HOW TO INSTALL
 install python3
-and use pip3 (comes with python3) to install the following packages:
+# create virtual environment
+python3 -m venv /path/to/new/virtual/env
+# install project dependencies
+pip3 install -r requirements.txt
+
+Libraries installed contain:
 # required for interacting with MongoDb
 dnspython
 pymongo
@@ -23,6 +33,8 @@ scikit-learn
 # run an interactive GUI to download NLTK packages
 import nltk
 nltk.download()
+import nltk
+nltk.download("stopwords")
 
 # downloads the NLTK's small collection of web text includes content from a Firefox discussion forum, conversations overheard in New York, the movie script of Pirates of the Carribean, personal advertisements, and wine reviews.
 nltk.download('webtext') 

@@ -1,28 +1,30 @@
+from datetime import datetime
 from factories.json import JsonFactory
 from repositories.tastes import TastesRepo
 from services.colors import ColorsService
-from datetime import datetime
-import urllib.request 
-import json
+from config.ingestConfig import IngestConfig
+
 
 class SetTastesTask:
     tasteRepo: TastesRepo
     colorsService: ColorsService
-
-    def __init__(self, tasteRepo: TastesRepo) -> None:
+    config: IngestConfig
+    
+    def __init__(self, tasteRepo: TastesRepo, config: IngestConfig) -> None:
         self.tasteRepo = tasteRepo
         self.colorsService = ColorsService()
+        self.config = config
 
     def run(self) -> None:
         startTime = datetime.now()
         updateDb = True
 
-        names = JsonFactory.readJsonFile("resources/flavours.json")
+        names = JsonFactory.readJsonFile(self.config.flavoursFilePath)
         tastes = []
 
         for tasteName in names:
             taste = self.tasteRepo.find_one({'name': tasteName})
-            if (taste == None):
+            if (taste is None):
                 (primary, secondary) = self.colorsService.getColorsFromWord(tasteName)
                 taste = {
                     'name': tasteName,
@@ -34,4 +36,4 @@ class SetTastesTask:
         # insert in Db
         if(updateDb):
             self.tasteRepo.insertMany(tastes, 100)
-            print("insert tags in db took: ", (datetime.now() - startTime))
+            print(f'insert tags in db took: {(datetime.now() - startTime)}')

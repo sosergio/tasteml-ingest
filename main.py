@@ -1,9 +1,12 @@
+
+from pymongo import MongoClient
 from repositories.clusters import ClustersRepo
 from repositories.tastes import TastesRepo
 from repositories.tastingNotes import TastingNotesRepo
 from tasks.setTastes import SetTastesTask
 from tasks.tokenizeTastingNotes import TokenizeTastingNotes
-from pymongo import MongoClient
+from config.ingestConfig import IngestConfig
+
 
 runColorTask = False
 runTokenizeTastingNotesTask = True
@@ -14,13 +17,18 @@ dbHost = "tasteml-cluster-mc39i"
 connection = f"mongodb+srv://{username}:{password}@{dbHost}.mongodb.net/test?retryWrites=true&w=majority"
 client = MongoClient(connection)
 
+config = IngestConfig()
+config.flavoursFilePath = "data/flavours.json"
+config.tastingNotesFilePath = "data/winemag-data-130k-v2.json"
+config.stopWordsFilePath = "data/domainStopWords.json"
+
 if(runColorTask):
     tastesRepo = TastesRepo(client)
-    t = SetTastesTask(tastesRepo)
+    t = SetTastesTask(tastesRepo, config)
     t.run()
 
 if(runTokenizeTastingNotesTask):
     tastingNotesRepo = TastingNotesRepo(client)
     clusterRepo = ClustersRepo(client)
-    t = TokenizeTastingNotes(tastingNotesRepo, clusterRepo)
+    t = TokenizeTastingNotes(clusterRepo, tastingNotesRepo, config)
     t.run()
