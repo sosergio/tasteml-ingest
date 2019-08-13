@@ -1,9 +1,9 @@
 
 from pymongo import MongoClient
 from repositories.clusters import ClustersRepo
-from repositories.tastes import TastesRepo
+from repositories.flavours import FlavoursRepo
 from repositories.tastingNotes import TastingNotesRepo
-from tasks.setTastes import SetTastesTask
+from tasks.writeFlavoursWithColors import WriteFlavoursWithColorsTask
 from tasks.tokenizeTastingNotes import TokenizeTastingNotes
 from config.ingestConfig import IngestConfig
 
@@ -23,8 +23,8 @@ config.tastingNotesFilePath = "data/winemag-data-130k-v2.json"
 config.stopWordsFilePath = "data/domainStopWords.json"
 
 if(runColorTask):
-    tastesRepo = TastesRepo(client)
-    t = SetTastesTask(tastesRepo, config)
+    flavoursRepo = FlavoursRepo(client)
+    t = WriteFlavoursWithColorsTask(flavoursRepo, config)
     t.run()
 
 if(runTokenizeTastingNotesTask):

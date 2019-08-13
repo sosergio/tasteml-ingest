@@ -19,4 +19,4 @@ test: clean-pyc
 	py.test --verbose --color=yes $(TEST_PATH)
 
 run:
-	python3 ingest/main.py
+	python3 main.py

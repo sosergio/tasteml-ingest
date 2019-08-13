@@ -1,15 +1,15 @@
 from pymongo import MongoClient
 
 
-class TastesRepo:
+class FlavoursRepo:
 
     def __init__(self, client: MongoClient):
         db = client.get_database('tasteml-db')
-        collection = db.get_collection('tastes')
+        collection = db.get_collection('flavours')
         self.collection = collection
 
-    def add(self, taste: any):
-        self.collection.insert_one(taste)
+    def add(self, flavour: any):
+        self.collection.insert_one(flavour)
 
     def find(self, filter: any):
         return self.collection.find(filter)

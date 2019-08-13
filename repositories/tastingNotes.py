@@ -1,4 +1,5 @@
 from pymongo import MongoClient
+from slugify import slugify
 
 
 class TastingNotesRepo:
@@ -12,6 +13,7 @@ class TastingNotesRepo:
         for attr, value in doc.items():
             if(value != 0 and attr != "index"):
                 toSave[attr] = value
+        toSave['slug'] = slugify(toSave['title'])
         return toSave
 
     def add(self, doc: any):
