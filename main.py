@@ -18,9 +18,25 @@ connection = f"mongodb+srv://{username}:{password}@{dbHost}.mongodb.net/test?ret
 client = MongoClient(connection)
 
 config = IngestConfig()
-config.flavoursFilePath = "data/flavours.json"
-config.tastingNotesFilePath = "data/winemag-data-130k-v2.json"
+demo = True
+if(demo):
+    config.flavoursFilePath = "data/simpleflavours.json"
+    config.tastingNotesFilePath = "data/simplereview.json"
+    config.sampleCount = 0
+    config.numberOfClusters = 2
+    config.printDebug = True
+    config.updateDb = False
+else:
+    config.flavoursFilePath = "data/flavours.json"
+    config.tastingNotesFilePath = "data/winemag-data-130k-v2.json"
+    config.sampleCount = 0
+    config.numberOfClusters = 32
+    config.printDebug = False
+    config.updateDb = True
+
 config.stopWordsFilePath = "data/domainStopWords.json"
+config.useStopWords = False
+
 
 if(runColorTask):
     flavoursRepo = FlavoursRepo(client)

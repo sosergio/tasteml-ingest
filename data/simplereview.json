@@ -1,0 +1,32 @@
+[{
+    "points": "87",
+    "title": "Wine 0",
+    "description": "There's an intensity of fruit red apples and pears cuts through the texture, leaving a beautiful almond aftertaste.",
+    "price": 10,
+    "variety": "White Blend",
+    "country": "Italy"
+},
+{
+    "points": "90",
+    "title": "Wine 1",
+    "description": "Full and yeasty, with rich coffee flavors backed with almond notes",
+    "price": 10,
+    "variety": "Red Blend",
+    "country": "Italy"
+},
+{
+    "points": "88",
+    "title": "Wine 2",
+    "description": "Aromas include coconut. Mango aftertaste.",
+    "price": 10,
+    "variety": "White Blend",
+    "country": "Italy"
+},
+{
+    "points": "89",
+    "title": "Wine 3",
+    "description": "The flavour of tropical mango is enriched by yeast notes.",
+    "price": 10,
+    "variety": "Red Blend",
+    "country": "Italy"
+}]

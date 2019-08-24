@@ -7,3 +7,4 @@ class IngestConfig:
     numberOfClusters: int = 32
     useStopWords: bool = False
     updateDb: bool = True
+    printDebug: bool = True

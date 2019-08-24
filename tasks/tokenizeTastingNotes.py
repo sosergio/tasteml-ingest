@@ -10,6 +10,7 @@ from factories.dataFrame import DataFrameFactory
 from services.tokenize import TokenizeService
 from config.ingestConfig import IngestConfig
 
+
 class TokenizeTastingNotes:
     stopWatchTime: datetime
     config: IngestConfig
@@ -19,10 +20,15 @@ class TokenizeTastingNotes:
         self.clustersRepo = clustersRepo
         self.config = config
         self.stopWatchTime = datetime.now()
+        self.tokenizeService = TokenizeService(config.printDebug)
 
     def stopWatchLog(self, str):
         print(f'{str} took {(datetime.now() - self.stopWatchTime)}')
         self.stopWatchTime = datetime.now()
+
+    def printDebug(self, obj):
+        if(self.config.printDebug):
+            print(obj)
 
     def prepareData(self) -> DataFrame:
         sampleCount = self.config.sampleCount
@@ -57,40 +63,41 @@ class TokenizeTastingNotes:
         __sw = list(stopwords.words('english'))
         stopWords = domainStopWords + __sw + list(text.ENGLISH_STOP_WORDS)
         # first pass tokenize
-        tokens, names = TokenizeService.tfidfTokenize(
-            data_df['description'], stopWords=stopWords)
+        tokens, names = self.tokenizeService.tfidfTokenize(
+            data_df['description'], stopWords=stopWords, tokenizer=self.tokenizeService.stemAndTokenizeText)
         self.stopWatchLog(
-            f'first pass tokenize, {names.__len__()} items found')
+            f'first pass tokenize, {names.__len__()} tokens found')
         # second pass tokenize
-        firstPass_topNames = TokenizeService.getTopTokenNames(
+        firstPass_topNames = self.tokenizeService.getTopTokenNames(
             tokens, names, firstPassExcludeTopNamesCount)
         print('firstPass_topNames: ', firstPass_topNames)
         stopWords += list(firstPass_topNames[:firstPassExcludeTopNamesCount])
-        tokens, names = TokenizeService.tfidfTokenize(
-            data_df['description'], stopWords, None)
-        names = TokenizeService.getTopTokenNames(tokens, names, 200)
-        print('keeping only first 200 top names: ', names)
-        tokens, names = TokenizeService.tfidfTokenize(
-            data_df['description'], None, names)
+        tokens, names = self.tokenizeService.tfidfTokenize(
+            data_df['description'], stopWords=stopWords, tokenizer=self.tokenizeService.stemAndTokenizeText)
+        print('tokens: ', names)
         self.stopWatchLog(
-            f'first pass tokenize, {names.__len__()} items found')
+            f'second pass tokenize, {names.__len__()} items found')
         return (tokens, names)
 
     def tokenizeDataWithVocabulary(self, data_df: DataFrame) -> (any, any):
         flavours_dict = JsonFactory.readJsonFile(self.config.flavoursFilePath)
-        tokens, names = TokenizeService.tfidfTokenize(
-            data_df['description'], vocabulary=flavours_dict)
+        flavours_dict_stemmed = self.tokenizeService.stemListOfTokens(flavours_dict)
+        tokens, names = self.tokenizeService.tfidfTokenize(
+            data_df['description'], vocabulary=flavours_dict_stemmed, tokenizer=self.tokenizeService.stemAndTokenizeText)
         self.stopWatchLog('tokenize with flavours vocabulary')
-        return (tokens, names)
+        return (tokens, flavours_dict)
 
     def mergeDataWithKMeans(self, data_df: DataFrame, tokens: any, names: any, numberOfClusters: int) -> (DataFrame, DataFrame):
         tokens_df = DataFrameFactory.createDataFrame(tokens, names)
-        centroids, allDistances = TokenizeService.kmeanCluster(
+        self.printDebug(tokens_df)
+        centroids, allDistances = self.tokenizeService.kmeanCluster(
             tokens_df, numberOfClusters)
         cluster_df = DataFrameFactory.createDataFrame(centroids, names)
+        self.printDebug(cluster_df)
         colNames = ['to_{0}'.format(s) for s in range(numberOfClusters)]
         allDistances_df = DataFrameFactory.createDataFrame(
             allDistances, colNames)
+        self.printDebug(allDistances_df)
         self.stopWatchLog('kmean centroids and all distances')
         # merge dataframes together
         data_withTokens_df = DataFrameFactory.joinDataFrames(

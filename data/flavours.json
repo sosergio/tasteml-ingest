@@ -17,11 +17,13 @@
     "butter", "cheese", "cream", "yoghurt",
     "vanilla", "cedar", "charred", "smoke", "resinous",
     "almond", "coconut", "hazelnut", "walnut", "chocolate", "coffee",
-    "leather", "meaty", "farmyard",
+    "leather", "meat", "farmyard",
     "vegetal", "mushroom", "hay", "leaves", "forest", "game", "savoury", "tobacco", "honey", "cereal",
-    "earth", "petrol", "rubber", "tar", "stony", "steely", "wool",
+    "earth", "petrol", "rubber", "tar", "ston", "steel", "wool",
     "leaf","herb","tomatoess","white flower","red fruits","ripe fruit","rum cake",
     "orange", "citrus",
     "smoked meat", "bacon", "umami", "licorice", "cassis", "liqueur", "black tea",
-    "fat", "espresso", "chestnut"
+    "fat", "espresso", "chestnut", "tangerine", "kiwi",
+    "anise", "caramel", "cocoa", "cola",
+    "hickory", "horseradish", "jasmine", "molasses", "sage", "rosemary", "sugar", "tropical"
 ]
