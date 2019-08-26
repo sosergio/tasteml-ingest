@@ -81,16 +81,16 @@ class TokenizeTastingNotes:
 
     def tokenizeDataWithVocabulary(self, data_df: DataFrame) -> (any, any):
         flavours_dict = JsonFactory.readJsonFile(self.config.flavoursFilePath)
-        flavours_dict_stemmed = self.tokenizeService.stemListOfTokens(flavours_dict)
+        flavours_dict_stemmed = self.tokenizeService.lemmaTokenize(flavours_dict)
         tokens, names = self.tokenizeService.tfidfTokenize(
             data_df['description'], vocabulary=flavours_dict_stemmed, tokenizer=self.tokenizeService.stemAndTokenizeText)
         self.stopWatchLog('tokenize with flavours vocabulary')
         return (tokens, flavours_dict)
 
-    def mergeDataWithKMeans(self, data_df: DataFrame, tokens: any, names: any, numberOfClusters: int) -> (DataFrame, DataFrame):
+    def mergeDataWithGMM(self, data_df: DataFrame, tokens: any, names: any, numberOfClusters: int) -> (DataFrame, DataFrame):
         tokens_df = DataFrameFactory.createDataFrame(tokens, names)
         self.printDebug(tokens_df)
-        centroids, allDistances = self.tokenizeService.kmeanCluster(
+        centroids, allDistances = self.tokenizeService.gaussianCluster(
             tokens_df, numberOfClusters)
         cluster_df = DataFrameFactory.createDataFrame(centroids, names)
         self.printDebug(cluster_df)
@@ -98,7 +98,26 @@ class TokenizeTastingNotes:
         allDistances_df = DataFrameFactory.createDataFrame(
             allDistances, colNames)
         self.printDebug(allDistances_df)
-        self.stopWatchLog('kmean centroids and all distances')
+        self.stopWatchLog('gmm centroids and all distances')
+        # merge dataframes together
+        data_withTokens_df = DataFrameFactory.joinDataFrames(
+            data_df, tokens_df)
+        data_withTokens_andDistanceToCentroids = DataFrameFactory.joinDataFrames(
+            data_withTokens_df, allDistances_df)
+        self.stopWatchLog('merging dataframes')
+        return (data_withTokens_andDistanceToCentroids, cluster_df)
+    
+    def clusterAndMergeData(self, data_df: DataFrame, tokens: any, names: any, numberOfClusters: int, clusterFn) -> (DataFrame, DataFrame):
+        tokens_df = DataFrameFactory.createDataFrame(tokens, names)
+        self.printDebug(tokens_df)
+        centroids, allDistances = clusterFn(tokens_df, numberOfClusters)
+        cluster_df = DataFrameFactory.createDataFrame(centroids, names)
+        self.printDebug(cluster_df)
+        colNames = ['to_{0}'.format(s) for s in range(numberOfClusters)]
+        allDistances_df = DataFrameFactory.createDataFrame(
+            allDistances, colNames)
+        self.printDebug(allDistances_df)
+        self.stopWatchLog(f'{self.config.clustering_alg} centroids and all distances')
         # merge dataframes together
         data_withTokens_df = DataFrameFactory.joinDataFrames(
             data_df, tokens_df)
@@ -123,12 +142,19 @@ class TokenizeTastingNotes:
 
     def run(self):
         self.stopWatchTime = datetime.now()
+        # prepare
         data_df = self.prepareData()
+        # tokenize
         if(self.config.useStopWords):
             (tokens, names) = self.tokenizeDataWithStopWords(data_df)
         else:
             (tokens, names) = self.tokenizeDataWithVocabulary(data_df)
-        (data_withTokens_andDistanceToCentroids, cluster_df) = self.mergeDataWithKMeans(
-            data_df, tokens, names, self.config.numberOfClusters)
+        # cluster
+        clusterFn = self.tokenizeService.kmeanCluster
+        if(self.config.clustering_alg == "gmm"):
+            clusterFn = self.tokenizeService.gaussianCluster
+        (data_withTokens_andDistanceToCentroids, cluster_df) = self.clusterAndMergeData(
+            data_df, tokens, names, self.config.numberOfClusters, clusterFn)
+        # save
         if(self.config.updateDb):
             self.updateDb(data_withTokens_andDistanceToCentroids, cluster_df)

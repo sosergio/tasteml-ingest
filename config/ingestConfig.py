@@ -8,3 +8,4 @@ class IngestConfig:
     useStopWords: bool = False
     updateDb: bool = True
     printDebug: bool = True
+    clustering_alg: {'kmean','gmm'} = 'kmean'

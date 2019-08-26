@@ -29,4 +29,12 @@
     "price": 10,
     "variety": "Red Blend",
     "country": "Italy"
+},
+{
+    "points": "89",
+    "title": "Wine 4",
+    "description": "The flavour of tropical mango is paired with a touch of almond.",
+    "price": 10,
+    "variety": "Red Blend",
+    "country": "Italy"
 }]

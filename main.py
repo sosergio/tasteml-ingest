@@ -8,8 +8,8 @@ from tasks.tokenizeTastingNotes import TokenizeTastingNotes
 from config.ingestConfig import IngestConfig
 
 
-runColorTask = False
-runTokenizeTastingNotesTask = True
+runColorTask = True
+runTokenizeTastingNotesTask = False
 
 username = "admin"
 password = "khCggojq5uP5Wdey"
@@ -18,12 +18,16 @@ connection = f"mongodb+srv://{username}:{password}@{dbHost}.mongodb.net/test?ret
 client = MongoClient(connection)
 
 config = IngestConfig()
-demo = True
+config.clustering_alg = "kmean"
+config.stopWordsFilePath = "data/domainStopWords.json"
+config.useStopWords = False
+demo = False
+
 if(demo):
     config.flavoursFilePath = "data/simpleflavours.json"
     config.tastingNotesFilePath = "data/simplereview.json"
     config.sampleCount = 0
-    config.numberOfClusters = 2
+    config.numberOfClusters = 3
     config.printDebug = True
     config.updateDb = False
 else:
@@ -33,10 +37,6 @@ else:
     config.numberOfClusters = 32
     config.printDebug = False
     config.updateDb = True
-
-config.stopWordsFilePath = "data/domainStopWords.json"
-config.useStopWords = False
-
 
 if(runColorTask):
     flavoursRepo = FlavoursRepo(client)

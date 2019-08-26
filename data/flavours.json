@@ -1,14 +1,14 @@
 [
     "acacia", "honeysuckle", "chamomile", "elderflower", "blossom", "rose", "violet",
-    "apple", "red apple", "gooseberry", "pear",
+    "apple", "gooseberry", "pear",
     "grapefruit", "lemon", "lime", "zest",
     "peach", "apricot", "nectarine",
     "banana", "lychee", "mango", "melon", "passion", "pineapple",
     "redcurrant", "cranberry", "raspberry", "strawberry", "cherry", "plum",
-    "blackcurrant", "blackberry", "bramble", "blueberry", 
-    "fig", "prune", "raisin", "sultana", "kirsch", "jam", "cooked", "baked", "stewed", "preserved",
-    "bell pepper", "capsicum", "white pepper", "leafiness", "tomato", "potato",
-    "grass", "asparagus", "blackcurrant leaf",
+    "blackcurrant", "blackberry", "blueberry", 
+    "fig", "prune", "raisin", "sultana", "kirsch", "jam", 
+    "capsicum", "tomato", "potato",
+    "grass", "asparagus",
     "eucalyptus", "mint", "medicinal", "lavender", "fennel", "dill",
     "cabbage", "peas", "beans", "olive",
     "cinnamon", "clove", "ginger", "nutmeg",
@@ -18,12 +18,16 @@
     "vanilla", "cedar", "charred", "smoke", "resinous",
     "almond", "coconut", "hazelnut", "walnut", "chocolate", "coffee",
     "leather", "meat", "farmyard",
-    "vegetal", "mushroom", "hay", "leaves", "forest", "game", "savoury", "tobacco", "honey", "cereal",
-    "earth", "petrol", "rubber", "tar", "ston", "steel", "wool",
-    "leaf","herb","tomatoess","white flower","red fruits","ripe fruit","rum cake",
-    "orange", "citrus",
-    "smoked meat", "bacon", "umami", "licorice", "cassis", "liqueur", "black tea",
+    "vegetal", "mushroom", "forest", "game", "savoury", "tobacco", "honey", "cereal",
+    "earth", "petrol", "rubber", "tar", "steel", "wool",
+    "leaf", "herb", "orange", "citrus",
+    "bacon", "umami", "licorice", "cassis", "liqueur",
     "fat", "espresso", "chestnut", "tangerine", "kiwi",
     "anise", "caramel", "cocoa", "cola",
-    "hickory", "horseradish", "jasmine", "molasses", "sage", "rosemary", "sugar", "tropical"
+    "hickory", "horseradish", "jasmine", "molass", "sage", "rosemary", "sugar", "tropical", "herbaceous",
+
+    "white stone", "red berry", "red apple", "white flower","red fruits","ripe fruit","rum cake",
+    "smoked meat", "black tea", "white pepper", "bell pepper", "blackcurrant leaf",
+
+    "bake", "stew", "preserve"
 ]

@@ -36,6 +36,13 @@ nltk.download()
 import nltk
 nltk.download("stopwords")
 
+# # Download Wordnet through NLTK in python console, used to lemmatize words
+import nltk
+nltk.download('punkt')
+nltk.download('maxent_treebank_pos_tagger')
+nltk.download('averaged_perceptron_tagger')
+nltk.download('wordnet')
+
 # downloads the NLTK's small collection of web text includes content from a Firefox discussion forum, conversations overheard in New York, the movie script of Pirates of the Carribean, personal advertisements, and wine reviews.
 nltk.download('webtext') 
 
