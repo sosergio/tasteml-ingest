@@ -25,7 +25,7 @@
 {
     "points": "89",
     "title": "Wine 3",
-    "description": "The flavour of tropical mango is enriched by yeast notes.",
+    "description": "The flavour of tropical-mango is enriched by yeast notes.",
     "price": 10,
     "variety": "Red Blend",
     "country": "Italy"
@@ -33,7 +33,7 @@
 {
     "points": "89",
     "title": "Wine 4",
-    "description": "The flavour of tropical mango is paired with a touch of almond.",
+    "description": "Dried berries and mango! with a touch of almond.",
     "price": 10,
     "variety": "Red Blend",
     "country": "Italy"

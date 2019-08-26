@@ -8,6 +8,7 @@ from nltk.stem.porter import PorterStemmer
 from nltk.stem import WordNetLemmatizer
 from nltk.corpus import wordnet
 from nltk.tokenize import MWETokenizer
+from nltk.tokenize import RegexpTokenizer
 
 
 class TokenizeService:
@@ -16,6 +17,7 @@ class TokenizeService:
         self.printDebug = printDebug
         self.stemmer = PorterStemmer()
         self.lemmatizer = WordNetLemmatizer()
+        self.monoGramTokenizer = RegexpTokenizer(r'\w+')
         self.mweTokenizer = MWETokenizer(separator=' ')
         self.tag_dict = {"J": wordnet.ADJ,
                          "N": wordnet.NOUN,
@@ -31,8 +33,14 @@ class TokenizeService:
         for token in tokens:
             if token in string.punctuation:
                 continue
-            words.append(self.lemmatizer.lemmatize(
-                token, self.get_wordnet_pos(token)))
+            if ' ' in token:
+                compound = []
+                [compound.append(self.lemmatizer.lemmatize(t, self.get_wordnet_pos(t)))
+                 for t in token.split()]
+                words.append(' '.join(compound))
+            else:
+                words.append(self.lemmatizer.lemmatize(
+                    token, self.get_wordnet_pos(token)))
         return words
 
     def stemListOfTokens(self, list):
@@ -41,7 +49,7 @@ class TokenizeService:
             if token in string.punctuation:
                 continue
             if token.endswith('y'):
-                token = token[:-1]
+                token = token[: -1]
             words.append(self.stemmer.stem(token))
         if(self.printDebug):
             print(words)
@@ -50,7 +58,7 @@ class TokenizeService:
     def stemAndTokenizeText(self, text):
         text = text.lower()
         # generates mono-gram tokens
-        monograms = nltk.word_tokenize(text)
+        monograms = self.monoGramTokenizer.tokenize(text)
         # stems the tokens
         # return self.stemListOfTokens(monograms)
         # lemmatization ot the tokens

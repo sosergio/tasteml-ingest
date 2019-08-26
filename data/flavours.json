@@ -15,7 +15,7 @@
     "pepper", "liquorice", "juniper",
     "yeast", "biscuit", "bread", "toast", "pastry", "lees",
     "butter", "cheese", "cream", "yoghurt",
-    "vanilla", "cedar", "charred", "smoke", "resinous",
+    "vanilla", "cedar", "charred", "smoke", 
     "almond", "coconut", "hazelnut", "walnut", "chocolate", "coffee",
     "leather", "meat", "farmyard",
     "vegetal", "mushroom", "forest", "game", "savoury", "tobacco", "honey", "cereal",
@@ -24,10 +24,13 @@
     "bacon", "umami", "licorice", "cassis", "liqueur",
     "fat", "espresso", "chestnut", "tangerine", "kiwi",
     "anise", "caramel", "cocoa", "cola",
-    "hickory", "horseradish", "jasmine", "molass", "sage", "rosemary", "sugar", "tropical", "herbaceous",
+    "hickory", "horseradish", "jasmine", "molass", "sage", "rosemary", "sugar", "tropical", 
 
-    "white stone", "red berry", "red apple", "white flower","red fruits","ripe fruit","rum cake",
-    "smoked meat", "black tea", "white pepper", "bell pepper", "blackcurrant leaf",
+    "white stone", "red berries", "red apple", "white flower","red fruits","ripe fruits","rum cake",
+    "smoked meat", "black tea", "white pepper", "green pepper", "bell pepper", "blackcurrant leaf",
+    "dried berries",
 
-    "bake", "stew", "preserve"
+    "bake", "stew", "preserve", "spice", "oregano", "garlic", "basil", "terragon",
+
+    "resinous", "herbaceous"
 ]

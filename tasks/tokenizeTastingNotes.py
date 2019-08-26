@@ -81,7 +81,11 @@ class TokenizeTastingNotes:
 
     def tokenizeDataWithVocabulary(self, data_df: DataFrame) -> (any, any):
         flavours_dict = JsonFactory.readJsonFile(self.config.flavoursFilePath)
-        flavours_dict_stemmed = self.tokenizeService.lemmaTokenize(flavours_dict)
+        flavours_dict_stemmed = self.tokenizeService.lemmaTokenize(
+            flavours_dict)
+        self.printDebug('tokenized flavours dictionary:')   
+        self.printDebug(flavours_dict_stemmed)
+        self.printDebug('tokenized wine reviews:')
         tokens, names = self.tokenizeService.tfidfTokenize(
             data_df['description'], vocabulary=flavours_dict_stemmed, tokenizer=self.tokenizeService.stemAndTokenizeText)
         self.stopWatchLog('tokenize with flavours vocabulary')
@@ -106,7 +110,7 @@ class TokenizeTastingNotes:
             data_withTokens_df, allDistances_df)
         self.stopWatchLog('merging dataframes')
         return (data_withTokens_andDistanceToCentroids, cluster_df)
-    
+
     def clusterAndMergeData(self, data_df: DataFrame, tokens: any, names: any, numberOfClusters: int, clusterFn) -> (DataFrame, DataFrame):
         tokens_df = DataFrameFactory.createDataFrame(tokens, names)
         self.printDebug(tokens_df)
@@ -117,7 +121,8 @@ class TokenizeTastingNotes:
         allDistances_df = DataFrameFactory.createDataFrame(
             allDistances, colNames)
         self.printDebug(allDistances_df)
-        self.stopWatchLog(f'{self.config.clustering_alg} centroids and all distances')
+        self.stopWatchLog(
+            f'{self.config.clustering_alg} centroids and all distances')
         # merge dataframes together
         data_withTokens_df = DataFrameFactory.joinDataFrames(
             data_df, tokens_df)
