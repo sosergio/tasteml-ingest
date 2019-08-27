@@ -8,11 +8,11 @@ from tasks.tokenizeTastingNotes import TokenizeTastingNotes
 from config.ingestConfig import IngestConfig
 
 
-runColorTask = True
-runTokenizeTastingNotesTask = False
+runWriteFlavoursWithColorsTask = False
+runTokenizeTastingNotesTask = True
 
 username = "admin"
-password = "khCggojq5uP5Wdey"
+password = "<password>"
 dbHost = "tasteml-cluster-mc39i"
 connection = f"mongodb+srv://{username}:{password}@{dbHost}.mongodb.net/test?retryWrites=true&w=majority"
 client = MongoClient(connection)
@@ -21,7 +21,7 @@ config = IngestConfig()
 config.clustering_alg = "kmean"
 config.stopWordsFilePath = "data/domainStopWords.json"
 config.useStopWords = False
-demo = False
+demo = True
 
 if(demo):
     config.flavoursFilePath = "data/simpleflavours.json"
@@ -38,7 +38,7 @@ else:
     config.printDebug = False
     config.updateDb = True
 
-if(runColorTask):
+if(runWriteFlavoursWithColorsTask):
     flavoursRepo = FlavoursRepo(client)
     t = WriteFlavoursWithColorsTask(flavoursRepo, config)
     t.run()
